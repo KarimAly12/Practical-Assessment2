@@ -1,0 +1,158 @@
+---
+title: "Data Wrangling"
+author: "Student name submitting the assessment report comes here"
+subtitle: Practical assessment 2
+date: ""
+output:
+  html_notebook: default
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+
+## **Setup**
+
+```{r}
+
+# Load the necessary packages required to reproduce the report. For example:
+
+library(kableExtra)
+library(magrittr)
+
+
+```
+
+
+## **Student names, numbers and percentage of contributions**
+```{r, echo=FALSE}
+
+# Add your names, numbers and percentage of your contribution here.
+
+na<- c(" Name1"," Name2")
+no<- c(" number1","  number2")
+pc<- c("Percentage1","  Percentage2")
+
+s<- data.frame(cbind(na,no,pc))
+colnames(s)<- c("Student name", "Student number", "Percentage of contribution")
+
+s %>% kbl(caption = "Group information") %>%
+  kable_classic(full_width = F, html_font = "Cambria")
+
+```
+<br>
+<br>
+
+## **Executive Summary**
+
+In your own words, provide a brief summary of the preprocessing. Explain the steps that you have taken to preprocess your data. Write this section last after you have performed all data preprocessing. (Word count Max: 300 words)
+You may use bulleted lists like this:
+
+* a
+* b
+* ....
+
+<br>
+<br>
+
+## **Data**
+
+Provide explanations here.
+
+```{r}
+
+# Import the data, provide your R codes here.
+
+
+```
+
+<br>
+<br>
+
+## **Understand** 
+
+
+```{r}
+
+# This is the R chunk for the Understand Section
+
+```
+
+Provide explanations here. 
+
+<br>
+<br>
+
+##	**Tidy & Manipulate Data I **
+
+
+```{r}
+
+# This is the R chunk for the Tidy & Manipulate Data I 
+
+```
+
+Provide explanations here. 
+
+<br>
+<br>
+
+## **Tidy & Manipulate Data II** 
+
+```{r}
+
+# This is the R chunk for the Tidy & Manipulate Data II 
+
+```
+
+Provide explanations here. 
+
+<br>
+<br>
+
+##	**Scan I **
+
+```{r}
+
+# This is the R chunk for the Scan I
+
+```
+
+Provide explanations here. 
+
+<br>
+<br>
+
+##	**Scan II**
+
+```{r}
+
+# This is the R chunk for the Scan II
+
+```
+
+Provide explanations here. 
+
+<br>
+<br>
+
+##	**Transform **
+
+```{r}
+
+# This is the R chunk for the Transform Section
+
+```
+
+Provide explanations here. 
+
+
+<br>
+<br>
+
+##	**Presentation **
+
+Add the link to your presentation inside the brackets below.
+
+[Presentation](...)
+
