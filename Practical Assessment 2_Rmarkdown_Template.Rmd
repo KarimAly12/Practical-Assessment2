@@ -99,6 +99,22 @@ print(head(merged_df))
 
 ## **Understand** 
 
+```{r}
+print(str(merged_df))
+```
+
+```{r}
+merged_df$status <- factor(merged_df$status, 
+                      levels = c(1, 2, 3), 
+                      labels = c("for_sale", "sold", "ready_to_build"))
+
+
+merged_df$prev_sold_date <- as.Date(merged_df$prev_sold_date, format = "%d-%m-%Y")
+
+print(str(merged_df))
+
+```
+
 
 ```{r}
 
