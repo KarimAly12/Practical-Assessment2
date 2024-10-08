@@ -17,6 +17,7 @@ output:
 
 # Load the necessary packages required to reproduce the report. For example:
 
+library(dplyr)
 library(kableExtra)
 library(magrittr)
 library(readr)
@@ -65,13 +66,13 @@ Provide explanations here.
 # Import the data, provide your R codes here.
 
 # Import the data without column names
-use_gdp_by_state_df <- read_csv("us-gdp-by-state.csv", show_col_types = FALSE)
+us_gdp_by_state_df <- read_csv("us-gdp-by-state.csv", show_col_types = FALSE)
 
 #aus_real_estate_df$City <- toupper(aus_real_estate_df$City)
 
 
 # Display the first few rows of the data frame
-print(head(use_gdp_by_state_df))
+print(head(us_gdp_by_state_df))
 
 
 
@@ -87,11 +88,11 @@ print(head(us_realtor_df))
 ```
 
 ```{r}
-merged_df = merged_df <- left_join(us_realtor_df, use_gdp_by_state_df, by = c("city" = "Area"))
+merged_df = merged_df <- left_join(us_realtor_df, us_gdp_by_state_df, by = c("state" = "Area"))
 
 
 
-print(head(merged_df))
+print(tail(merged_df))
 ```
 
 <br>
