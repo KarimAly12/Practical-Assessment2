@@ -141,10 +141,15 @@ Provide explanations here.
 
 ##	**Tidy & Manipulate Data I **
 
+In the merged dataset some columns headers are values, not variables names. Columns '2013', '2014', '2015', '2016', '2017' are supposed to be under column year with the GDP for each year in different column.
+
 
 ```{r}
 
 # This is the R chunk for the Tidy & Manipulate Data I 
+merged_df <- merged_df %>% gather(`2013`, `2014`, `2015`, `2016`, `2017`, key = "year", value = "GDP")
+
+tail(merged_df)
 
 ```
 
