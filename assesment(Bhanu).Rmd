@@ -434,6 +434,7 @@ print(head(alabama_df))
 # Display the dimensions of the Alabama dataset
 print(dim(alabama_df))
 ```
+
 ```{r}
 # Define a function to replace outliers with the median of the column
 replace_outliers_with_median <- function(column) {

@@ -47,13 +47,11 @@ s %>% kbl(caption = "Group information") %>%
 
 ## **Executive Summary**
 
-In this project, we integrated two datasets to create a unified dataset for comprehensive analysis. The primary objective was to prepare the data for further analytical tasks. The process began by importing the datasets and eliminating irrelevant columns to streamline the data. We then merged the datasets into a single, cohesive dataset.
+In this project, we integrated two datasets to create a unified dataset for comprehensive analysis. The primary objective was to prepare the data for further analytical tasks. The process began by importing the datasets and eliminating irrelevant columns to streamline the data. We decided to tidy and manipulate the data before merging the datasets, as one of them was not in a clean format and needed to be addressed first. We then merged the datasets into a single, cohesive dataset.
 
-To better understand the data, various R scripts were used for exploratory analysis, providing insights into the data's structure and attributes. We identified untidy data and applied necessary steps to reshape it into a tidy format, ensuring consistency and ease of analysis. Additionally, we created a new variable derived from two existing variables to enrich the dataset with more relevant information.
+To better understand the data, various R scripts were used for exploratory analysis, providing insights into the data's structure and attributes.  Additionally, we created a new variable derived from two existing variables to enrich the dataset with more relevant information.
 
 Next, we scanned the dataset for any missing values, special values, inconsistencies, and outliers. These issues were addressed using appropriate techniques, such as imputation for missing data and transformations to correct inconsistencies or outlier effects. As a final step, a transformation was applied to one of the variables to improve the data's suitability for analysis.
-
-
 
 <br>
 <br>
@@ -67,7 +65,11 @@ The 2 dataset we used are obtained from the Kaggle website.
   *USA Real Estate Dataset is obtained from https://www.kaggle.com/datasets/ahmedshahriarsakib/usa-real-estate-dataset/data
   
   
-The First Dataset   
+The first dataset provides information on GDP across various years for different U.S. states. It consists of seven columns: "Fips," "Area," and the years 2013 to 2017. The "Fips" column represents the unique code assigned to each state, while the "Area" column lists the state names. The columns for each year (2013, 2014, 2015, 2016, 2017) show the GDP values for the corresponding state in that particular year. 
+
+
+This second dataset is about real estate properties and includes various details about houses and their listings. It shows which real estate broker or agency is handling each property ("brokered_by") and the current "status" of the property, such as whether it's "ready for sale" or "ready to build." The "price" is either the current listing price or the amount it was recently sold for if it's no longer on the market. It also provides the number of bedrooms ("bed") and bathrooms ("bath") in the house, as well as the size of the land in acres ("acre_lot"). The location of the property is detailed through the street address ("street"), city, state, and postal code ("zip_code"). Additionally, the "house_size" indicates the living space in square feet. The dataset also keeps track of when the property was last sold ("prev_sold_date").
+
 ```{r}
 
 # Import the data, provide your R codes here.
@@ -100,14 +102,6 @@ print(tail(us_realtor_df))
 
 ```
 
-```{r}
-merged_df = merged_df <- left_join(us_realtor_df, us_gdp_by_state_df, by = c("state" = "Area"))
-
-print(tail(merged_df))
-```
-
-
-
 Data Import and Filtering:
 
 The script starts by importing a CSV file named "us-gdp-by-state.csv" into a data frame called us_gdp_by_state_df, with the column names not being shown initially. The data represents GDP information by state in the United States.
@@ -116,40 +110,6 @@ The script selects only the "Area" and "2017" columns, which presumably represen
 
 Another dataset, "us-realtor-data.csv", is imported into a data frame called us_realtor_df. This dataset is assumed to contain real estate information by state.
 
-Merging Data:
-
-Finally, a left join is performed between us_realtor_df and us_gdp_by_state_df based on the state/area names. The resulting data frame, merged_df, includes the real estate data along with the GDP information for each state (or area). This step integrates the GDP data into the real estate dataset to allow for analysis combining both economic and real estate factors.
-
-<br>
-<br>
-
-## **Understand** 
-
-```{r}
-print(str(merged_df))
-
-```
-
-```{r}
-#merged_df$status <- as.factor(merged_df$status)
-#levels(merged_df$status) <- c("ready_to_build", "for_sale","sold")
-
-merged_df$prev_sold_date <- as.Date(merged_df$prev_sold_date, format = "%d/%m/%Y")
-
-print(str(merged_df))
-
-```
-
-```{r}
-
-# This is the R chunk for the Understand Section
-
-```
-
-Provide explanations here. 
-
-<br>
-<br>
 
 ##	**Tidy & Manipulate Data I **
 
@@ -167,10 +127,76 @@ tail(merged_df)
 This R code reshapes the merged_df data frame by converting the 2017 column into a key-value pair, where "year" becomes the new column for the year and "GDP" for the corresponding GDP values. This transformation changes the data from a wide to a long format, making it more suitable for time series analysis.
 
 
-Provide explanations here. 
 
 <br>
 <br>
+
+##	**Merging Datasets **
+
+```{r}
+merged_df = merged_df <- left_join(us_realtor_df, us_gdp_by_state_df, by = c("state" = "Area"))
+
+print(tail(merged_df))
+```
+
+
+Merging Data:
+
+Finally, a left join is performed between us_realtor_df and us_gdp_by_state_df based on the state/area names. The resulting data frame, merged_df, includes the real estate data along with the GDP information for each state (or area). This step integrates the GDP data into the real estate dataset to allow for analysis combining both economic and real estate factors.
+
+<br>
+<br>
+
+## **Understand** 
+
+```{r}
+print(str(merged_df))
+
+```
+```{r}
+summary(merged_df)
+
+
+```
+
+
+```{r}
+print(unique(merged_df$status))
+
+```
+
+```{r}
+print(unique(merged_df$state))
+
+```
+
+```{r}
+print(unique(us_gdp_by_state_df$Area))
+
+```
+
+```{r}
+
+
+merged_df$prev_sold_date <- as.Date(merged_df$prev_sold_date, format = "%d/%m/%Y")
+
+print(str(merged_df))
+
+```
+
+
+In this R code, we perform some basic data exploration and data conversion tasks on the dataset `merged_df`. We begin by using the `str()` function to print the structure of `merged_df`, which gives us an overview of the dataset, including the data types of each column and a preview of the values.
+
+Next, we use the `summary()` function to generate a statistical summary of the dataset, providing key information such as the minimum, median, mean, and maximum values for each numeric column, as well as counts for categorical columns.
+
+We then print the unique values in the `status` column using the `unique()` function to understand the different categories present. Similarly, we use the `unique()` function to list the distinct values in the `state` column of `merged_df` and the `Area` column of  dataset, `us_gdp_by_state_df`, which gives us an idea of the different states or areas covered in the data.
+
+Finally, we convert the `prev_sold_date` column in `merged_df` to the date format using the `as.Date()` function with the specified format of "day/month/year". After this transformation, we print the structure of `merged_df` again to confirm that the date conversion was successful and to see any changes in the data structure.
+
+<br>
+<br>
+
+
 
 ## **Tidy & Manipulate Data II** 
 
@@ -286,8 +312,7 @@ merged_df <- merged_df %>%
                         price_per_sqft)) %>% 
 ungroup()
 
-#merged_df <- merged_df %>%
-#  filter(!is.na(price_per_sqft))
+
 
 print(colSums(is.na(merged_df)))
 
@@ -404,74 +429,105 @@ violated_records <- merged_df[violation_vector, ]
 
 print(violated_records)
 ```
+We started by checking how many missing values there are in the dataset using `colSums(is.na(merged_df))`.We removed any rows that have missing information in  columns like `brokered_by`, `price`, `street`, `city`, `zip_code`, or `GDP`. The reasons why We dropped these rows is because it contributes very low percentage of the dataset so removing these rows will have no impact on the dataset. For the columns that contains numerous amount of missing values like `bed`, `bath`, `house_size`, and `price_per_sqft` I calculated the mean of these columns and replace the missing values with. The process goes as follows:
 
-Provide explanations here. 
+We filled the missing values in the 'bed' column by calculating the average number of beds for each group based on `city` and `state`. After filling in these values, we removed any remaining rows with missing 'bed' values. This process is repeated for the 'bath' column, where missing values are replaced with the average for each group, followed by removing any rows where 'bath' is still missing. The same method is applied to the 'house_size' column. Lastly, we calculated 'price_per_sqft' for any missing values by dividing 'price' by 'house_size'. Throughout the script, the number of missing values is monitored to ensure the dataset is being cleaned effectively.
 
+We uses the `editrules` package to check the quality of our dataset, `merged_df`. First, we load the package and create a rule, `Rule1`, which says that the `price` must be greater than 0. We then use the `violatedEdits` function to find any records in `merged_df` that don’t follow this rule. The violations are saved in a matrix, which we change into a logical vector called `violation_vector` using the `apply` function. This vector shows which records have issues, and we extract and print these problematic records from `merged_df`.
+
+We do the same thing for the `bed`, `house_size`, and `GDP` columns using `Rule2`, `Rule4`, and `Rule5`. Each time, we set a rule that checks if the values in those columns are greater than 0. We identify any violations, turn them into a logical vector, and print them out.
+
+Finally, we can clean our dataset by removing rows that don’t meet the rules. For example, after finding records with a `price` of 0, we filter `merged_df` to get rid of those records, making sure only valid data is left for our analysis. 
 <br>
 <br>
 
 ##	**Scan II**
-
-```{r}
-# Filter the dataset to include only Alabama
-alabama_df <- merged_df[merged_df$state == "Alabama", ]
-
-# Display the first few rows of the Alabama dataset
-print(head(alabama_df))
-
-# Display the dimensions of the Alabama dataset
-print(dim(alabama_df))
-```
-
 ```{r}
 
-#Question 8
+# Question 8 
 
-# Load necessary library
-# This is the R chunk for the Scan II
 # Load necessary library
 library(ggplot2)
 
-# Add an index column for the row number
-merged_df$index <- 1:nrow(merged_df)
+# Define proper labels for each column
+y_axis_labels <- list(
+  price = "Price ($)",
+  bed = "Number of Bedrooms",
+  bath = "Number of Bathrooms",
+  house_size = "House Size (sqft)",
+  price_per_sqft = "Price per Square Foot ($/sqft)"
+)
 
-# Check for outliers using scatter plots
-numeric_columns <- merged_df %>% select(price, bed, bath, house_size, price_per_sqft)
-
-# Function to detect outliers using IQR method
-detect_outliers <- function(x) {
-  Q1 <- quantile(x, 0.25, na.rm = TRUE)
-  Q3 <- quantile(x, 0.75, na.rm = TRUE)
-  IQR <- Q3 - Q1
-  lower_bound <- Q1 - 1.5 * IQR
-  upper_bound <- Q3 + 1.5 * IQR
-  return(ifelse(x < lower_bound | x > upper_bound, TRUE, FALSE))
-}
-
-# Add a new column in the data to identify outliers for each numeric column
-for (col in names(numeric_columns)) {
-  merged_df[[paste0(col, "_outlier")]] <- detect_outliers(merged_df[[col]])
-}
-
-# Plot scatter plots for each column with outliers highlighted
-scatter_plot_list <- lapply(names(numeric_columns), function(col) {
-  ggplot(merged_df, aes_string(x = "index", y = col, color = paste0(col, "_outlier"))) +
-    geom_point(alpha = 0.6) +
-    scale_color_manual(values = c("black", "red")) +  # Red for outliers, black for normal points
+# Plot boxplots for each column to visually inspect outliers, with added measurements and scales
+boxplot_list <- lapply(names(numeric_columns), function(col) {
+  ggplot(df, aes_string(x = "1", y = col)) +
+    geom_boxplot(fill = "lightblue", color = "black", outlier.color = "red", outlier.shape = 16, outlier.size = 2) +
     labs(
-      title = paste("Scatter Plot of", col, "with Outliers Highlighted"), 
-      x = "Index", 
-      y = col, 
-      color = "Outlier"
+      title = paste("Boxplot of", col), 
+      x = "Data", 
+      y = y_axis_labels[[col]],  # Use correct label from the list
+      caption = paste("Boxplot showing the distribution of", col, "with outliers marked in red.")
     ) +
-    theme_minimal()
+    theme_minimal(base_size = 15) +  # Increasing font size for better readability
+    theme(
+      plot.title = element_text(hjust = 0.5),  # Center the title
+      axis.title.x = element_blank()  # Remove the x-axis title (since it's always "Data")
+    )
 })
 
-# Print scatter plots
-scatter_plot_list
+# Print boxplots
+boxplot_list
+
+ 
+
 ```
 
-Provide explanations here. 
+```{r}
+# Define a function to replace outliers with the median of the column
+replace_outliers_with_median <- function(column) {
+  # Calculate the first and third quartile
+  Q1 <- quantile(column, 0.25, na.rm = TRUE)
+  Q3 <- quantile(column, 0.75, na.rm = TRUE)
+  
+  # Calculate the Interquartile Range (IQR)
+  IQR_value <- IQR(column, na.rm = TRUE)
+  
+  # Define lower and upper bounds for outliers
+  lower_bound <- Q1 - 1.5 * IQR_value
+  upper_bound <- Q3 + 1.5 * IQR_value
+  
+  # Calculate the median of the column
+  median_value <- median(column, na.rm = TRUE)
+  
+  # Replace values outside the bounds with the median
+  column[column < lower_bound | column > upper_bound] <- median_value
+  
+  # Return the modified column
+  return(column)
+}
+
+# Apply the function to each column in your dataframe where you want to replace outliers
+df <- merged_df 
+
+# Replace outliers in the numeric columns
+df[] <- lapply(df, function(x) if(is.numeric(x)) replace_outliers_with_median(x) else x)
+
+merged_df <- df
+
+# View the modified dataframe
+print(merged_df)
+```
+
+
+
+In this task, we work on analyzing and cleaning the dataset `merged_df` by first visualizing outliers with boxplots and then replacing any outliers with median values.
+
+We start by loading the `ggplot2` library for creating plots. We then set up descriptive labels for different numeric columns, like `price`, `bed`, `bath`, `house_size`, and `price_per_sqft`, to make the plots easier to understand. We create boxplots for each numeric column to show how the values are spread out, with outliers marked in red. The boxplots help us visually spot any unusual values. We also format the plots for better readability, like centering the titles.
+
+Next, we focus on cleaning the data by handling the outliers. We define a function, `replace_outliers_with_median`, that finds and replaces outlier values in a numeric column with the median (middle) value of that column. The function calculates the first and third quartiles (Q1 and Q3), then determines the range (IQR) to identify outliers. If a value is much lower than Q1 or much higher than Q3 (1.5 times the IQR), it's considered an outlier and replaced with the median. 
+
+We apply this function to all numeric columns in `merged_df` to replace any outliers while leaving non-numeric columns unchanged. After cleaning the data, we update `merged_df` and print the modified dataset to review the changes. This helps us manage and clean the data by identifying and adjusting for any extreme values.
+
 
 <br>
 <br>
@@ -508,8 +564,11 @@ par(mfrow = c(1, 1))
 
 ```
 
-Provide explanations here. 
+In this R code, we aim to reduce the skewness of the price_per_sqft variable in our dataset, merged_df, by applying a log transformation. We start by loading the necessary libraries: dplyr for data manipulation and moments for calculating skewness. First, we calculate and print the skewness of price_per_sqft before applying any transformations to see how skewed the data is.
 
+Next, we apply a log transformation to the price_per_sqft column and store the result in a new column called log_price_per_sqft. This transformation helps to make the data more normally distributed by compressing the larger values, which can reduce skewness.
+
+After applying the log transformation, we calculate the skewness again for the new log_price_per_sqft column and print the result to see if the transformation effectively reduced the skewness. Finally, we visualize the distributions before and after the transformation by plotting histograms side by side. One histogram shows the original price_per_sqft, and the other shows the log-transformed values, allowing us to compare the distributions and see the effect of the transformation.
 
 <br>
 <br>
