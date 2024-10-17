@@ -62,7 +62,12 @@ Next, we scanned the dataset for any missing values, special values, inconsisten
 
 gdp of puerto rico 2017 = 31108
 
-
+The 2 dataset we used are obtained from the Kaggle website.
+  *GDP per capita in US states is obtained from https://www.kaggle.com/datasets/solorzano/gdp-per-capita-in-us-states
+  *USA Real Estate Dataset is obtained from https://www.kaggle.com/datasets/ahmedshahriarsakib/usa-real-estate-dataset/data
+  
+  
+The First Dataset   
 ```{r}
 
 # Import the data, provide your R codes here.
@@ -214,10 +219,6 @@ print(colSums(is.na(merged_df)))
 
 ```
 
-```{r}
-
-is.nan(merged_df)
-```
 
 
 ```{r}
