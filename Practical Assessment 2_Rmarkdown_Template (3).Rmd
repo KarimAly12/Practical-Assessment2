@@ -1,0 +1,558 @@
+---
+title: "Data Wrangling"
+author: "Student name submitting the assessment report comes here"
+subtitle: Practical assessment 2
+date: ""
+output:
+  html_notebook: default
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+
+## **Setup**
+
+```{r}
+
+# Load the necessary packages required to reproduce the report. For example:
+
+library(dplyr)
+library(kableExtra)
+library(magrittr)
+library(readr)
+library(tidyr)
+
+
+```
+
+
+## **Student names, numbers and percentage of contributions**
+```{r, echo=FALSE}
+
+# Add your names, numbers and percentage of your contribution here.
+
+na<- c(" Karim Aly"," Bhanuchandu Bochu")
+no<- c(" 4104031","  4120371")
+pc<- c("Percentage1","  Percentage2")
+
+s<- data.frame(cbind(na,no,pc))
+colnames(s)<- c("Student name", "Student number", "Percentage of contribution")
+
+s %>% kbl(caption = "Group information") %>%
+  kable_classic(full_width = F, html_font = "Cambria")
+
+```
+<br>
+<br>
+
+## **Executive Summary**
+
+In this project, we integrated two datasets to create a unified dataset for comprehensive analysis. The primary objective was to prepare the data for further analytical tasks. The process began by importing the datasets and eliminating irrelevant columns to streamline the data. We then merged the datasets into a single, cohesive dataset.
+
+To better understand the data, various R scripts were used for exploratory analysis, providing insights into the data's structure and attributes. We identified untidy data and applied necessary steps to reshape it into a tidy format, ensuring consistency and ease of analysis. Additionally, we created a new variable derived from two existing variables to enrich the dataset with more relevant information.
+
+Next, we scanned the dataset for any missing values, special values, inconsistencies, and outliers. These issues were addressed using appropriate techniques, such as imputation for missing data and transformations to correct inconsistencies or outlier effects. As a final step, a transformation was applied to one of the variables to improve the data's suitability for analysis.
+
+
+
+<br>
+<br>
+
+## **Data**
+
+gdp of puerto rico 2017 = 31108
+
+
+```{r}
+
+# Import the data, provide your R codes here.
+
+# Import the data without column names
+us_gdp_by_state_df <- read_csv("us-gdp-by-state.csv", show_col_types = FALSE)
+
+#aus_real_estate_df$City <- toupper(aus_real_estate_df$City)
+
+us_gdp_by_state_df <- us_gdp_by_state_df %>% filter(Area != "United States")
+us_gdp_by_state_df <- us_gdp_by_state_df %>% select(c("Area", "2017"))
+
+us_gdp_by_state_df <- us_gdp_by_state_df %>% add_row(Area = "Puerto Rico", `2017` = 31108)
+
+
+
+# Display the first few rows of the data frame
+print(head(us_gdp_by_state_df))
+
+
+
+```
+
+```{r}
+us_realtor_df <- read.csv("us-realtor-data.csv", stringsAsFactors = TRUE)
+
+
+
+print(tail(us_realtor_df))
+
+```
+
+```{r}
+merged_df = merged_df <- left_join(us_realtor_df, us_gdp_by_state_df, by = c("state" = "Area"))
+
+print(tail(merged_df))
+```
+
+
+
+Data Import and Filtering:
+
+The script starts by importing a CSV file named "us-gdp-by-state.csv" into a data frame called us_gdp_by_state_df, with the column names not being shown initially. The data represents GDP information by state in the United States.
+The data frame is then filtered to exclude any rows where the "Area" column equals "United States", as the analysis is intended to be at the state level rather than the entire country.
+The script selects only the "Area" and "2017" columns, which presumably represent the state names and their corresponding GDP for the year 2017.
+
+Another dataset, "us-realtor-data.csv", is imported into a data frame called us_realtor_df. This dataset is assumed to contain real estate information by state.
+
+Merging Data:
+
+Finally, a left join is performed between us_realtor_df and us_gdp_by_state_df based on the state/area names. The resulting data frame, merged_df, includes the real estate data along with the GDP information for each state (or area). This step integrates the GDP data into the real estate dataset to allow for analysis combining both economic and real estate factors.
+
+<br>
+<br>
+
+## **Understand** 
+
+```{r}
+print(str(merged_df))
+
+```
+
+```{r}
+#merged_df$status <- as.factor(merged_df$status)
+#levels(merged_df$status) <- c("ready_to_build", "for_sale","sold")
+
+merged_df$prev_sold_date <- as.Date(merged_df$prev_sold_date, format = "%d/%m/%Y")
+
+print(str(merged_df))
+
+```
+
+```{r}
+
+# This is the R chunk for the Understand Section
+
+```
+
+Provide explanations here. 
+
+<br>
+<br>
+
+##	**Tidy & Manipulate Data I **
+
+In the merged dataset, some column headers are actual values rather than variable names. Specifically, the "2017" column should be converted to a variable representing the year, with its values placed under a new "year" column, while the corresponding GDP figures should be stored in a separate "GDP" column. This transformation restructures the data for proper analysis by organizing each year’s GDP in a more suitable long format.
+
+```{r}
+
+# This is the R chunk for the Tidy & Manipulate Data I 
+merged_df <- merged_df %>% gather(`2017`, key = "year", value = "GDP")
+
+tail(merged_df)
+
+```
+
+This R code reshapes the merged_df data frame by converting the 2017 column into a key-value pair, where "year" becomes the new column for the year and "GDP" for the corresponding GDP values. This transformation changes the data from a wide to a long format, making it more suitable for time series analysis.
+
+
+Provide explanations here. 
+
+<br>
+<br>
+
+## **Tidy & Manipulate Data II** 
+
+```{r}
+
+###Question NO 6
+
+
+# Create a new variable 'price_per_sqft' using base R
+merged_df$price_per_sqft <- merged_df$price / merged_df$house_size
+
+# Display the first few rows of the updated dataframe
+print(head(merged_df))
+
+# Summary statistics of the new variable
+summary(merged_df$price_per_sqft)
+
+print(tail(merged_df))
+
+# This is the R chunk for the Tidy & Manipulate Data II 
+
+```
+
+The code adds a new variable called `price_per_sqft` to the `merged_df` data frame. This new variable is calculated by dividing the house price (`price`) by the house size (`house_size`) for each row, giving the price per square foot of each property. The script then displays the first few rows of the updated data frame to confirm the new column was added correctly.
+
+After that, it generates summary statistics for the `price_per_sqft` variable, providing insights such as the minimum, median, mean, and maximum values. Lastly, the script shows the last few rows of the modified data frame for further inspection.
+Provide explanations here. 
+
+<br>
+<br>
+
+##	**Scan I **
+
+
+```{r}
+
+#install.packages("Hmisc")
+library(Hmisc)
+
+
+```
+
+```{r}
+print(colSums(is.na(merged_df)))
+# This is the R chunk for the Scan
+
+```
+
+```{r}
+str(merged_df)
+
+
+# Step 3: Check for NaNs and NAs in numeric columns
+numeric_columns <- merged_df %>%
+  select_if(is.numeric)
+
+# Apply is.nan() and is.na() to detect missing or NaN values
+nan_check <- sapply(numeric_columns, function(x) sum(is.nan(x)))
+na_check <- sapply(numeric_columns, function(x) sum(is.na(x)))
+
+# Print the check results
+nan_check
+na_check
+```
+
+
+```{r}
+merged_df <- merged_df[complete.cases(merged_df[, c("brokered_by", "price", "street", "city", "zip_code", "GDP")]), ]
+print(colSums(is.na(merged_df)))
+
+```
+
+```{r}
+merged_df <- merged_df %>%
+  group_by(city, state) %>%
+   mutate(bed = ifelse( is.na(bed), 
+                        mean(bed[!is.na(bed)], na.rm = TRUE), 
+                        bed)) %>% 
+ungroup()
+
+merged_df <- merged_df %>%
+  filter(!is.na(bed))
+
+
+print(colSums(is.na(merged_df)))
+
+
+```
+
+```{r}
+merged_df <- merged_df %>%
+  group_by(city, state) %>%
+   mutate(bath = ifelse( is.na(bath), 
+                        mean(bath[!is.na(bath)], na.rm = TRUE), 
+                        bath)) %>% 
+ungroup()
+
+merged_df <- merged_df %>%
+  filter(!is.na(bath))
+
+print(colSums(is.na(merged_df)))
+
+
+
+```
+
+```{r}
+merged_df <- merged_df %>%
+  group_by(city, state) %>%
+   mutate(house_size = ifelse( is.na(house_size), 
+                        mean(house_size[!is.na(house_size)], na.rm = TRUE), 
+                        house_size)) %>% 
+ungroup()
+
+merged_df <- merged_df %>%
+  filter(!is.na(house_size))
+
+print(colSums(is.na(merged_df)))
+
+
+
+```
+
+```{r}
+merged_df <- merged_df %>%
+  group_by(city, state) %>%
+   mutate(price_per_sqft = ifelse( is.na(price_per_sqft), 
+                       price/house_size, 
+                        price_per_sqft)) %>% 
+ungroup()
+
+#merged_df <- merged_df %>%
+#  filter(!is.na(price_per_sqft))
+
+print(colSums(is.na(merged_df)))
+
+
+
+```
+
+
+
+
+
+```{r}
+#install.packages("editrules")
+library(editrules)
+
+#Define the rule
+Rule1 <- editset(c("price > 0"))
+
+
+# Find the violated edits
+violations <- violatedEdits(Rule1, merged_df)
+
+
+# Convert the violations matrix to a logical vector
+violation_vector <- apply(violations, 1, any)
+
+# Print the records that violated the rule
+violated_records <- merged_df[violation_vector, ]
+
+print(violated_records)
+
+merged_df <- merged_df %>% filter(price != 0)
+
+
+```
+
+
+```{r}
+
+
+#Define the rule
+Rule2 <- editset(c("bed > 0"))
+
+
+# Find the violated edits
+violations <- violatedEdits(Rule2, merged_df)
+
+
+# Convert the violations matrix to a logical vector
+violation_vector <- apply(violations, 1, any)
+
+# Print the records that violated the rule
+violated_records <- merged_df[violation_vector, ]
+
+print(violated_records)
+```
+
+```{r}
+
+
+#Define the rule
+Rule2 <- editset(c("bed > 0"))
+
+
+# Find the violated edits
+violations <- violatedEdits(Rule2, merged_df)
+
+
+# Convert the violations matrix to a logical vector
+violation_vector <- apply(violations, 1, any)
+
+# Print the records that violated the rule
+violated_records <- merged_df[violation_vector, ]
+
+print(violated_records)
+```
+
+```{r}
+
+
+#Define the rule
+Rule4 <- editset(c("house_size > 0"))
+
+
+# Find the violated edits
+violations <- violatedEdits(Rule4, merged_df)
+
+
+# Convert the violations matrix to a logical vector
+violation_vector <- apply(violations, 1, any)
+
+# Print the records that violated the rule
+violated_records <- merged_df[violation_vector, ]
+
+print(violated_records)
+```
+
+```{r}
+
+
+#Define the rule
+Rule5 <- editset(c("GDP > 0"))
+
+
+# Find the violated edits
+violations <- violatedEdits(Rule5, merged_df)
+
+
+# Convert the violations matrix to a logical vector
+violation_vector <- apply(violations, 1, any)
+
+# Print the records that violated the rule
+violated_records <- merged_df[violation_vector, ]
+
+print(violated_records)
+```
+
+Provide explanations here. 
+
+<br>
+<br>
+
+##	**Scan II**
+
+```{r}
+# Filter the dataset to include only Alabama
+alabama_df <- merged_df[merged_df$state == "Alabama", ]
+
+# Display the first few rows of the Alabama dataset
+print(head(alabama_df))
+
+# Display the dimensions of the Alabama dataset
+print(dim(alabama_df))
+```
+```{r}
+# Define a function to replace outliers with the median of the column
+replace_outliers_with_median <- function(column) {
+  # Calculate the first and third quartile
+  Q1 <- quantile(column, 0.25, na.rm = TRUE)
+  Q3 <- quantile(column, 0.75, na.rm = TRUE)
+  
+  # Calculate the Interquartile Range (IQR)
+  IQR_value <- IQR(column, na.rm = TRUE)
+  
+  # Define lower and upper bounds for outliers
+  lower_bound <- Q1 - 1.5 * IQR_value
+  upper_bound <- Q3 + 1.5 * IQR_value
+  
+  # Calculate the median of the column
+  median_value <- median(column, na.rm = TRUE)
+  
+  # Replace values outside the bounds with the median
+  column[column < lower_bound | column > upper_bound] <- median_value
+  
+  # Return the modified column
+  return(column)
+}
+
+# Apply the function to each column in your dataframe where you want to replace outliers
+df <- merged_df 
+
+# Replace outliers in the numeric columns
+df[] <- lapply(df, function(x) if(is.numeric(x)) replace_outliers_with_median(x) else x)
+
+# View the modified dataframe
+print(df)
+```
+
+```{r}
+
+# Question 8 
+
+# Load necessary library
+library(ggplot2)
+
+# Define proper labels for each column
+y_axis_labels <- list(
+  price = "Price ($)",
+  bed = "Number of Bedrooms",
+  bath = "Number of Bathrooms",
+  house_size = "House Size (sqft)",
+  price_per_sqft = "Price per Square Foot ($/sqft)"
+)
+
+# Plot boxplots for each column to visually inspect outliers, with added measurements and scales
+boxplot_list <- lapply(names(numeric_columns), function(col) {
+  ggplot(df, aes_string(x = "1", y = col)) +
+    geom_boxplot(fill = "lightblue", color = "black", outlier.color = "red", outlier.shape = 16, outlier.size = 2) +
+    labs(
+      title = paste("Boxplot of", col), 
+      x = "Data", 
+      y = y_axis_labels[[col]],  # Use correct label from the list
+      caption = paste("Boxplot showing the distribution of", col, "with outliers marked in red.")
+    ) +
+    theme_minimal(base_size = 15) +  # Increasing font size for better readability
+    theme(
+      plot.title = element_text(hjust = 0.5),  # Center the title
+      axis.title.x = element_blank()  # Remove the x-axis title (since it's always "Data")
+    )
+})
+
+# Print boxplots
+boxplot_list
+
+ 
+
+```
+
+Provide explanations here. 
+
+<br>
+<br>
+
+##	**Transform **
+
+```{r}
+#question 9
+
+
+# This is the R chunk for the Transform Section
+library(dplyr)
+library(moments)  # for skewness calculation
+
+# Assuming 'merged_df' contains the variable 'price_per_sqft'
+# We will apply a log transformation to 'price_per_sqft' to reduce skewness
+
+# Check skewness before transformation
+skewness_before <- skewness(df$price_per_sqft, na.rm = TRUE)
+print(paste("Skewness before log transformation:", skewness_before))
+
+# Apply log transformation
+df$log_price_per_sqft <- log(df$price_per_sqft)
+
+# Check skewness after transformation
+skewness_after <- skewness(df$log_price_per_sqft, na.rm = TRUE)
+print(paste("Skewness after log transformation:", skewness_after))
+
+# Visualizing the distribution before and after transformation
+par(mfrow = c(1, 2))
+hist(df$price_per_sqft, main = "Price per Sqft (Before)", xlab = "Price per Sqft", col = "blue")
+hist(df$log_price_per_sqft, main = "Log-Transformed Price per Sqft", xlab = "Log(Price per Sqft)", col = "green")
+par(mfrow = c(1, 1))
+```
+
+Provide explanations here. 
+
+
+<br>
+<br>
+
+##	**Presentation **
+
+Add the link to your presentation inside the brackets below.
+
+[Presentation](...)
+
