@@ -343,6 +343,7 @@ violated_records <- merged_df[violation_vector, ]
 
 print(violated_records)
 ```
+
 ```{r}
 
 
@@ -382,6 +383,7 @@ violated_records <- merged_df[violation_vector, ]
 
 print(violated_records)
 ```
+
 ```{r}
 
 
