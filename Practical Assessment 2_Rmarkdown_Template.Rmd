@@ -431,36 +431,43 @@ print(dim(alabama_df))
 # Load necessary library
 library(ggplot2)
 
-# Check for outliers using boxplots
-numeric_columns <- merged_df %>% select(price, bed, bath, `house_size`, price_per_sqft)
+# Add an index column for the row number
+merged_df$index <- 1:nrow(merged_df)
 
-# Plot boxplots for each column to visually inspect outliers
-boxplot_list <- lapply(names(numeric_columns), function(col) {
-  ggplot(merged_df, aes_string(x = "1", y = col)) +
-    geom_boxplot() +
-    labs(title = paste("Boxplot of", col), x = "", y = col) +
-    theme_minimal()
-})
+# Check for outliers using scatter plots
+numeric_columns <- merged_df %>% select(price, bed, bath, house_size, price_per_sqft)
 
-# Print boxplots
-print(boxplot_list)
-
-# Function to detect outliers using IQR method (with na.rm = TRUE to handle missing values)
+# Function to detect outliers using IQR method
 detect_outliers <- function(x) {
   Q1 <- quantile(x, 0.25, na.rm = TRUE)
   Q3 <- quantile(x, 0.75, na.rm = TRUE)
   IQR <- Q3 - Q1
   lower_bound <- Q1 - 1.5 * IQR
   upper_bound <- Q3 + 1.5 * IQR
-  return(x[x < lower_bound | x > upper_bound & !is.na(x)])
+  return(ifelse(x < lower_bound | x > upper_bound, TRUE, FALSE))
 }
 
-# Apply the outlier detection function to each numeric column (after handling NAs)
-outliers <- lapply(numeric_columns, detect_outliers)
+# Add a new column in the data to identify outliers for each numeric column
+for (col in names(numeric_columns)) {
+  merged_df[[paste0(col, "_outlier")]] <- detect_outliers(merged_df[[col]])
+}
 
-# Print outliers for each column
-names(outliers) <- names(numeric_columns)
-outliers
+# Plot scatter plots for each column with outliers highlighted
+scatter_plot_list <- lapply(names(numeric_columns), function(col) {
+  ggplot(merged_df, aes_string(x = "index", y = col, color = paste0(col, "_outlier"))) +
+    geom_point(alpha = 0.6) +
+    scale_color_manual(values = c("black", "red")) +  # Red for outliers, black for normal points
+    labs(
+      title = paste("Scatter Plot of", col, "with Outliers Highlighted"), 
+      x = "Index", 
+      y = col, 
+      color = "Outlier"
+    ) +
+    theme_minimal()
+})
+
+# Print scatter plots
+scatter_plot_list
 ```
 
 Provide explanations here. 
@@ -475,26 +482,28 @@ Provide explanations here.
 
 
 # This is the R chunk for the Transform Section
-# Check the skewness of the 'price' variable before transformation
-library(ggplot2)
+library(dplyr)
+library(moments)  # for skewness calculation
 
-# Plotting the original distribution of 'price'
-ggplot(merged_df, aes(x = price)) +
-  geom_histogram(bins = 30, fill = "blue", color = "black", alpha = 0.7) +
-  labs(title = "Distribution of Price (Before Transformation)", x = "Price", y = "Count")
+# Assuming 'merged_df' contains the variable 'price_per_sqft'
+# We will apply a log transformation to 'price_per_sqft' to reduce skewness
 
-# Apply log transformation to 'price' (adding 1 to avoid log(0) issues)
-merged_df <- merged_df %>%
-  mutate(log_price = log(price + 1))
+# Check skewness before transformation
+skewness_before <- skewness(merged_df$price_per_sqft, na.rm = TRUE)
+print(paste("Skewness before log transformation:", skewness_before))
 
-# Check the skewness after log transformation
-ggplot(merged_df, aes(x = log_price)) +
-  geom_histogram(bins = 30, fill = "green", color = "black", alpha = 0.7) +
-  labs(title = "Distribution of Log-Transformed Price", x = "Log Price", y = "Count")
+# Apply log transformation
+merged_df$log_price_per_sqft <- log(merged_df$price_per_sqft)
 
-# Compare the original and transformed variables side by side
-summary(merged_df$price)
-summary(merged_df$log_price)
+# Check skewness after transformation
+skewness_after <- skewness(merged_df$log_price_per_sqft, na.rm = TRUE)
+print(paste("Skewness after log transformation:", skewness_after))
+
+# Visualizing the distribution before and after transformation
+par(mfrow = c(1, 2))
+hist(merged_df$price_per_sqft, main = "Price per Sqft (Before)", xlab = "Price per Sqft", col = "blue")
+hist(merged_df$log_price_per_sqft, main = "Log-Transformed Price per Sqft", xlab = "Log(Price per Sqft)", col = "green")
+par(mfrow = c(1, 1))
 
 ```
 
