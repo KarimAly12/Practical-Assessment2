@@ -213,8 +213,61 @@ Provide explanations here.
 
 ```{r}
 
-# This is the R chunk for the Scan II
+#Question 8
 
+# This is the R chunk for the Scan II
+detect_outliers <- function(x) {
+  if(!is.numeric(x)) return(NA)
+  Q1 <- quantile(x, 0.25, na.rm = TRUE)
+  Q3 <- quantile(x, 0.75, na.rm = TRUE)
+  IQR <- Q3 - Q1
+  lower_bound <- Q1 - 1.5 * IQR
+  upper_bound <- Q3 + 1.5 * IQR
+  return(sum(x < lower_bound | x > upper_bound, na.rm = TRUE))
+}
+
+# Function to check for special values
+check_special_values <- function(x) {
+  if(is.numeric(x)) {
+    return(c(sum(x == 0, na.rm = TRUE), sum(x < 0, na.rm = TRUE)))
+  } else {
+    return(c(NA, NA))
+  }
+}
+
+# Check for missing values
+missing_values <- colSums(is.na(alabama_df))
+print("Missing values per column:")
+print(missing_values)
+
+# Check for potential special values
+special_values <- sapply(alabama_df, check_special_values)
+rownames(special_values) <- c("Zero_Count", "Negative_Count")
+print("Potential special values:")
+print(special_values)
+
+# Detect outliers in each numeric column
+outliers_count <- sapply(alabama_df, detect_outliers)
+print("Number of outliers in each numeric column:")
+print(outliers_count)
+
+# Calculate percentage of outliers
+outliers_percentage <- (outliers_count / nrow(alabama_df)) * 100
+print("Percentage of outliers in each numeric column:")
+print(outliers_percentage)
+
+# Visualize distribution of a few key numeric variables
+par(mfrow = c(2, 2))
+hist(alabama_df$price, main = "Distribution of Price", xlab = "Price")
+hist(alabama_df$house_size, main = "Distribution of House Size", xlab = "House Size")
+hist(alabama_df$price_per_sqft, main = "Distribution of Price per Sq Ft", xlab = "Price per Sq Ft")
+hist(as.numeric(alabama_df$prev_sold_date), main = "Distribution of Previous Sold Date", xlab = "Date")
+par(mfrow = c(1, 1))
+
+# Box plots for key numeric variables
+boxplot(alabama_df$price, main = "Box Plot of Price")
+boxplot(alabama_df$house_size, main = "Box Plot of House Size")
+boxplot(alabama_df$price_per_sqft, main = "Box Plot of Price per Sq Ft")
 ```
 
 Provide explanations here. 
@@ -225,9 +278,32 @@ Provide explanations here.
 ##	**Transform **
 
 ```{r}
+#question 9
+
 
 # This is the R chunk for the Transform Section
+library(dplyr)
+library(moments)  # for skewness calculation
 
+# Assuming 'merged_df' contains the variable 'price_per_sqft'
+# We will apply a log transformation to 'price_per_sqft' to reduce skewness
+
+# Check skewness before transformation
+skewness_before <- skewness(merged_df$price_per_sqft, na.rm = TRUE)
+print(paste("Skewness before log transformation:", skewness_before))
+
+# Apply log transformation
+merged_df$log_price_per_sqft <- log(merged_df$price_per_sqft)
+
+# Check skewness after transformation
+skewness_after <- skewness(merged_df$log_price_per_sqft, na.rm = TRUE)
+print(paste("Skewness after log transformation:", skewness_after))
+
+# Visualizing the distribution before and after transformation
+par(mfrow = c(1, 2))
+hist(merged_df$price_per_sqft, main = "Price per Sqft (Before)", xlab = "Price per Sqft", col = "blue")
+hist(merged_df$log_price_per_sqft, main = "Log-Transformed Price per Sqft", xlab = "Log(Price per Sqft)", col = "green")
+par(mfrow = c(1, 1))
 ```
 
 Provide explanations here. 
