@@ -94,6 +94,7 @@ us_realtor_df <- read.csv("us-realtor-data.csv", stringsAsFactors = TRUE)
 print(tail(us_realtor_df))
 
 ```
+
 ```{r}
 merged_df = merged_df <- left_join(us_realtor_df, us_gdp_by_state_df, by = c("state" = "Area"))
 
