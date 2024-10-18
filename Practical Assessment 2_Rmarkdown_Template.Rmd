@@ -19,6 +19,7 @@ output:
 
 #install.packages("editrules")
 library(editrules)
+library(tidyr)
 
 library(ggplot2)
 library(dplyr)
@@ -136,14 +137,14 @@ This R code reshapes the merged_df data frame by converting the 2017 column into
 
 ```{r}
 merged_df = merged_df <- left_join(us_realtor_df, us_gdp_by_state_df, by = c("state" = "Area"))
-
+merged_df <- merged_df %>% select(-acre_lot)
 print(tail(merged_df))
 ```
 
 
 Merging Data:
 
-Finally, a left join is performed between us_realtor_df and us_gdp_by_state_df based on the state/area names. The resulting data frame, merged_df, includes the real estate data along with the GDP information for each state (or area). This step left_join the GDP data with the real estate dataset to allow for analysis combining both economic and real estate factors.
+Finally, a left join is performed between us_realtor_df and us_gdp_by_state_df based on the state/area names. The resulting data frame, merged_df, includes the real estate data along with the GDP information for each state (or area). This step left_join the GDP data with the real estate dataset to allow for analysis combining both economic and real estate factors. Then we drop the acre_lot column because we are not interest int
 
 <br>
 <br>
@@ -180,6 +181,7 @@ print(unique(us_gdp_by_state_df$Area))
 
 
 merged_df$prev_sold_date <- as.Date(merged_df$prev_sold_date, format = "%d/%m/%Y")
+
 
 print(str(merged_df))
 
@@ -450,42 +452,59 @@ Finally, we can clean our dataset by removing rows that don’t meet the rules. 
 <br>
 
 ##	**Scan II**
+```{r}
+
+# Create boxplots for the numeric columns
+boxplot(merged_df$price, 
+        main = "Boxplots of Price", # Title of the boxplot
+        ylab = "Values",                       # Y-axis label
+        col = c("lightblue", "lightgreen", "lightpink"), # Colors for each boxplot
+        border = "darkblue")    
+
+```
+```{r}
+
+# Create boxplots for the numeric columns
+boxplot(merged_df$bed, 
+        main = "Boxplots of bed", # Title of the boxplot
+        ylab = "Values",                       # Y-axis label
+        col = c("lightblue", "lightgreen", "lightpink"), # Colors for each boxplot
+        border = "darkblue")    
+
+```
+```{r}
+
+# Create boxplots for the numeric columns
+boxplot(merged_df$bath, 
+        main = "Boxplots of bath", # Title of the boxplot
+        ylab = "Values",                       # Y-axis label
+        col = c("lightblue", "lightgreen", "lightpink"), # Colors for each boxplot
+        border = "darkblue")    
+
+```
 
 ```{r}
 
-# Question 8 
+# Create boxplots for the numeric columns
+boxplot(merged_df$house_size, 
+        main = "Boxplots of house_size", # Title of the boxplot
+        ylab = "Values",                       # Y-axis label
+        col = c("lightblue", "lightgreen", "lightpink"), # Colors for each boxplot
+        border = "darkblue")    
 
-# Load necessary library
-
-# Define proper labels for each column
-y_axis_labels <- list(
-  price = "Price ($)",
-  bed = "Number of Bedrooms",
-  bath = "Number of Bathrooms",
-  house_size = "House Size (sqft)",
-  price_per_sqft = "Price per Square Foot ($/sqft)"
-)
-
-# Plot boxplots for each column to visually inspect outliers, with added measurements and scales
-boxplot_list <- lapply(names(numeric_columns), function(col) {
-  ggplot(df, aes_string(x = "1", y = col)) +
-    geom_boxplot(fill = "lightblue", color = "black", outlier.color = "red", outlier.shape = 16, outlier.size = 2) +
-    labs(
-      title = paste("Boxplot of", col), 
-      x = "Data", 
-      y = y_axis_labels[[col]],  # Use correct label from the list
-      caption = paste("Boxplot showing the distribution of", col, "with outliers marked in red.")
-    ) +
-    theme_minimal(base_size = 15) +  # Increasing font size for better readability
-    theme(
-      plot.title = element_text(hjust = 0.5),  # Center the title
-      axis.title.x = element_blank()  # Remove the x-axis title (since it's always "Data")
-    )
-})
-
-# Print boxplots
-boxplot_list
 ```
+```{r}
+
+# Create boxplots for the numeric columns
+boxplot(merged_df$price_per_sqft, 
+        main = "Boxplots of price_per_sqft", # Title of the boxplot
+        ylab = "Values",                       # Y-axis label
+        col = c("lightblue", "lightgreen", "lightpink"), # Colors for each boxplot
+        border = "darkblue")    
+
+```
+
+
 
 ```{r}
 # Define a function to replace outliers with the median of the column
@@ -511,16 +530,19 @@ replace_outliers_with_median <- function(column) {
   return(column)
 }
 
-# Apply the function to each column in your dataframe where you want to replace outliers
+# Specify the columns where you want to replace outliers
+columns_to_modify <- c("price", "bed", "bath", "house_size", "price_per_sqft")  
+
+# Apply the function only to the specified columns
 df <- merged_df 
 
-# Replace outliers in the numeric columns
-df[] <- lapply(df, function(x) if(is.numeric(x)) replace_outliers_with_median(x) else x)
+df[columns_to_modify] <- lapply(df[columns_to_modify], replace_outliers_with_median)
 
 merged_df <- df
 
 # View the modified dataframe
 print(merged_df)
+
 ```
 
 
