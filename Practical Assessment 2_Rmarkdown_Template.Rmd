@@ -96,9 +96,6 @@ us_gdp_by_state_df <- us_gdp_by_state_df %>% add_row(Area = "Puerto Rico", `2017
 
 # Display the first few rows of the data frame
 print(head(us_gdp_by_state_df))
-
-
-
 ```
 
 ```{r}
@@ -107,7 +104,6 @@ us_realtor_df <- read.csv("us-realtor-data.csv", stringsAsFactors = TRUE)
 
 
 print(tail(us_realtor_df))
-
 ```
 
 Data Import and Filtering:
@@ -130,13 +126,9 @@ In the merged dataset, some column headers are actual values rather than variabl
 us_gdp_by_state_df <- us_gdp_by_state_df %>% gather(`2017`, key = "year", value = "GDP")
 
 tail(us_gdp_by_state_df)
-
 ```
 
 This R code reshapes the merged_df data frame by converting the 2017 column into a key-value pair, where "year" becomes the new column for the year and "GDP" for the corresponding GDP values. This transformation changes the data from a wide to a long format, making it more suitable for time series analysis.
-
-
-
 <br>
 <br>
 
@@ -475,9 +467,6 @@ boxplot_list <- lapply(names(numeric_columns), function(col) {
 
 # Print boxplots
 boxplot_list
-
- 
-
 ```
 
 ```{r}
@@ -572,7 +561,10 @@ After applying the log transformation, we calculate the skewness again for the n
 
 ##	**Presentation **
 
-Add the link to your presentation inside the brackets below.
 
-[Presentation](...)
+[Presentation](
+
+Karim Aly : https://rmit-arc.instructuremedia.com/embed/bbaa9ed8-d13c-4bb6-a2fb-1227598e7f32
+
+)
 
