@@ -113,11 +113,12 @@ print(tail(us_realtor_df))
 
 Data Import and Filtering:
 
-The script starts by importing a CSV file named "us-gdp-by-state.csv" into a data frame called us_gdp_by_state_df, with the column names not being shown initially. The data represents GDP information by state in the United States.
+We starts by importing a CSV file named "us-gdp-by-state.csv" into a data frame called us_gdp_by_state_df, with the column names not being shown initially. The data represents GDP information by state in the United States.
 The data frame is then filtered to exclude any rows where the "Area" column equals "United States", as the analysis is intended to be at the state level rather than the entire country.
-The script selects only the "Area" and "2017" columns, which presumably represent the state names and their corresponding GDP for the year 2017.
 
-Another dataset, "us-realtor-data.csv", is imported into a data frame called us_realtor_df. This dataset is assumed to contain real estate information by state.
+We selected only the "Area" and "2017" columns, which  represent the state names and their corresponding GDP for the year 2017.
+
+Another dataset, "us-realtor-data.csv", is imported into a data frame called us_realtor_df. This dataset contains real estate information by state.
 
 
 ##	**Tidy & Manipulate Data I **
@@ -151,7 +152,7 @@ print(tail(merged_df))
 
 Merging Data:
 
-Finally, a left join is performed between us_realtor_df and us_gdp_by_state_df based on the state/area names. The resulting data frame, merged_df, includes the real estate data along with the GDP information for each state (or area). This step integrates the GDP data into the real estate dataset to allow for analysis combining both economic and real estate factors.
+Finally, a left join is performed between us_realtor_df and us_gdp_by_state_df based on the state/area names. The resulting data frame, merged_df, includes the real estate data along with the GDP information for each state (or area). This step left_join the GDP data with the real estate dataset to allow for analysis combining both economic and real estate factors.
 
 <br>
 <br>
@@ -229,10 +230,9 @@ print(tail(merged_df))
 
 ```
 
-The code adds a new variable called `price_per_sqft` to the `merged_df` data frame. This new variable is calculated by dividing the house price (`price`) by the house size (`house_size`) for each row, giving the price per square foot of each property. The script then displays the first few rows of the updated data frame to confirm the new column was added correctly.
+This code adds a new variable called `price_per_sqft` to the `merged_df` data frame. This new variable is calculated by dividing the house price (`price`) by the house size (`house_size`) for each row, giving the price per square foot of each property.The code then displays the first few rows of the updated data frame to confirm the new column was added correctly.
 
 After that, it generates summary statistics for the `price_per_sqft` variable, providing insights such as the minimum, median, mean, and maximum values. Lastly, the script shows the last few rows of the modified data frame for further inspection.
-Provide explanations here. 
 
 <br>
 <br>
@@ -521,7 +521,7 @@ print(merged_df)
 
 In this task, we work on analyzing and cleaning the dataset `merged_df` by first visualizing outliers with boxplots and then replacing any outliers with median values.
 
-We start by loading the `ggplot2` library for creating plots. We then set up descriptive labels for different numeric columns, like `price`, `bed`, `bath`, `house_size`, and `price_per_sqft`, to make the plots easier to understand. We create boxplots for each numeric column to show how the values are spread out, with outliers marked in red. The boxplots help us visually spot any unusual values. We also format the plots for better readability, like centering the titles.
+We start by loading the `ggplot2` library for creating plots. We then set up descriptive labels for different numeric columns, like `price`, `bed`, `bath`, `house_size`, and `price_per_sqft`, to make the plots easier to understand. We create boxplots for each numeric column to show how the values are spread out, with outliers marked in red. We also format the plots for better readability, like centering the titles.
 
 Next, we focus on cleaning the data by handling the outliers. We define a function, `replace_outliers_with_median`, that finds and replaces outlier values in a numeric column with the median (middle) value of that column. The function calculates the first and third quartiles (Q1 and Q3), then determines the range (IQR) to identify outliers. If a value is much lower than Q1 or much higher than Q3 (1.5 times the IQR), it's considered an outlier and replaced with the median. 
 
@@ -562,7 +562,7 @@ par(mfrow = c(1, 1))
 
 ```
 
-In this R code, we aim to reduce the skewness of the price_per_sqft variable in our dataset, merged_df, by applying a log transformation. We start by loading the necessary libraries: dplyr for data manipulation and moments for calculating skewness. First, we calculate and print the skewness of price_per_sqft before applying any transformations to see how skewed the data is.
+In this R code, we aim to reduce the skewness of the price_per_sqft variable in our dataset, by applying a log transformation.  First, we calculate and print the skewness of price_per_sqft before applying any transformations to see how skewed the data is.
 
 Next, we apply a log transformation to the price_per_sqft column and store the result in a new column called log_price_per_sqft. This transformation helps to make the data more normally distributed by compressing the larger values, which can reduce skewness.
 
