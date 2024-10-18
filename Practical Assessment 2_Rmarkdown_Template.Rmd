@@ -218,9 +218,6 @@ print(head(merged_df))
 summary(merged_df$price_per_sqft)
 
 print(tail(merged_df))
-
-# This is the R chunk for the Tidy & Manipulate Data II 
-
 ```
 
 This code adds a new variable called `price_per_sqft` to the `merged_df` data frame. This new variable is calculated by dividing the house price (`price`) by the house size (`house_size`) for each row, giving the price per square foot of each property.The code then displays the first few rows of the updated data frame to confirm the new column was added correctly.
@@ -542,18 +539,18 @@ merged_df <- df
 
 # View the modified dataframe
 print(merged_df)
-
 ```
 
 
 
-In this task, we work on analyzing and cleaning the dataset `merged_df` by first visualizing outliers with boxplots and then replacing any outliers with median values.
+In this R code, we create boxplots for several numeric columns in the dataset `merged_df` to visualize their distributions and identify any outliers. We then clean the data by replacing outliers with the median values for each column.
 
-We start by loading the `ggplot2` library for creating plots. We then set up descriptive labels for different numeric columns, like `price`, `bed`, `bath`, `house_size`, and `price_per_sqft`, to make the plots easier to understand. We create boxplots for each numeric column to show how the values are spread out, with outliers marked in red. We also format the plots for better readability, like centering the titles.
+We start by generating boxplots for the columns `price`, `bed`, `bath`, `house_size`, and `price_per_sqft`. Each boxplot shows the range of values in the column, with any outliers displayed outside the "box" (representing the interquartile range). We customize the boxplots with titles, axis labels, and colors to make them easier to interpret.
 
-Next, we focus on cleaning the data by handling the outliers. We define a function, `replace_outliers_with_median`, that finds and replaces outlier values in a numeric column with the median (middle) value of that column. The function calculates the first and third quartiles (Q1 and Q3), then determines the range (IQR) to identify outliers. If a value is much lower than Q1 or much higher than Q3 (1.5 times the IQR), it's considered an outlier and replaced with the median. 
+Next, we define a function, `replace_outliers_with_median`, to clean the data by replacing outlier values. The function first calculates the first (Q1) and third (Q3) quartiles for a column and uses these to find the interquartile range (IQR). The lower and upper bounds for outliers are set to 1.5 times the IQR below Q1 and above Q3, respectively. Any values falling outside these bounds are considered outliers and are replaced with the median (middle) value of the column.
 
-We apply this function to all numeric columns in `merged_df` to replace any outliers while leaving non-numeric columns unchanged. After cleaning the data, we update `merged_df` and print the modified dataset to review the changes. This helps us manage and clean the data by identifying and adjusting for any extreme values.
+We then specify which columns we want to clean (`price`, `bed`, `bath`, `house_size`, and `price_per_sqft`) and apply the outlier-replacement function to these columns. After modifying the specified columns, we update `merged_df` with the cleaned data. Finally, we print the updated dataset to check the changes.
+
 
 
 <br>
@@ -604,7 +601,12 @@ After applying the log transformation, we calculate the skewness again for the n
 
 [Presentation](
 
-Karim Aly : https://rmit-arc.instructuremedia.com/embed/bbaa9ed8-d13c-4bb6-a2fb-1227598e7f32
+Karim Aly : https://rmit-arc.instructuremedia.com/embed/39640fa6-398c-43c0-96aa-0f4e84eeb553
+
+
+
+
+Bhanuchandu Bochu: https://rmit-arc.instructuremedia.com/embed/372b1b4d-5ba3-44be-9e42-3f1e403f200c
 
 )
 
