@@ -1,6 +1,6 @@
 ---
 title: "Data Wrangling"
-author: "Student name submitting the assessment report comes here"
+author: "Karim Aly"
 subtitle: Practical assessment 2
 date: ""
 output:
@@ -17,6 +17,15 @@ output:
 
 # Load the necessary packages required to reproduce the report. For example:
 
+#install.packages("editrules")
+library(editrules)
+
+library(ggplot2)
+library(dplyr)
+library(moments)  # for skewness calculation
+#install.packages("Hmisc")
+library(Hmisc)
+
 library(dplyr)
 library(kableExtra)
 library(magrittr)
@@ -32,8 +41,8 @@ library(readr)
 # Add your names, numbers and percentage of your contribution here.
 
 na<- c(" Karim Aly"," Bhanuchandu Bochu")
-no<- c(" 4104031","  4120371")
-pc<- c("Percentage1","  Percentage2")
+no<- c(" s4104031","  s4120371")
+pc<- c("50%","  50%")
 
 s<- data.frame(cbind(na,no,pc))
 colnames(s)<- c("Student name", "Student number", "Percentage of contribution")
@@ -60,9 +69,9 @@ Next, we scanned the dataset for any missing values, special values, inconsisten
 
 gdp of puerto rico 2017 = 31108
 
-The 2 dataset we used are obtained from the Kaggle website.
-  *GDP per capita in US states is obtained from https://www.kaggle.com/datasets/solorzano/gdp-per-capita-in-us-states
-  *USA Real Estate Dataset is obtained from https://www.kaggle.com/datasets/ahmedshahriarsakib/usa-real-estate-dataset/data
+The 2 dataset we used are obtained from the Kaggle website:
+-GDP per capita in US states is obtained from https://www.kaggle.com/datasets/solorzano/gdp-per-capita-in-us-states
+-USA Real Estate Dataset is obtained from https://www.kaggle.com/datasets/ahmedshahriarsakib/usa-real-estate-dataset/data
   
   
 The first dataset provides information on GDP across various years for different U.S. states. It consists of seven columns: "Fips," "Area," and the years 2013 to 2017. The "Fips" column represents the unique code assigned to each state, while the "Area" column lists the state names. The columns for each year (2013, 2014, 2015, 2016, 2017) show the GDP values for the corresponding state in that particular year. 
@@ -118,9 +127,9 @@ In the merged dataset, some column headers are actual values rather than variabl
 ```{r}
 
 # This is the R chunk for the Tidy & Manipulate Data I 
-merged_df <- merged_df %>% gather(`2017`, key = "year", value = "GDP")
+us_gdp_by_state_df <- us_gdp_by_state_df %>% gather(`2017`, key = "year", value = "GDP")
 
-tail(merged_df)
+tail(us_gdp_by_state_df)
 
 ```
 
@@ -232,14 +241,6 @@ Provide explanations here.
 
 
 ```{r}
-
-#install.packages("Hmisc")
-library(Hmisc)
-
-
-```
-
-```{r}
 print(colSums(is.na(merged_df)))
 # This is the R chunk for the Scan
 
@@ -325,8 +326,6 @@ print(colSums(is.na(merged_df)))
 
 
 ```{r}
-#install.packages("editrules")
-library(editrules)
 
 #Define the rule
 Rule1 <- editset(c("price > 0"))
@@ -442,12 +441,12 @@ Finally, we can clean our dataset by removing rows that don’t meet the rules. 
 <br>
 
 ##	**Scan II**
+
 ```{r}
 
 # Question 8 
 
 # Load necessary library
-library(ggplot2)
 
 # Define proper labels for each column
 y_axis_labels <- list(
@@ -539,8 +538,7 @@ We apply this function to all numeric columns in `merged_df` to replace any outl
 
 
 # This is the R chunk for the Transform Section
-library(dplyr)
-library(moments)  # for skewness calculation
+
 
 # Assuming 'merged_df' contains the variable 'price_per_sqft'
 # We will apply a log transformation to 'price_per_sqft' to reduce skewness
