@@ -67,7 +67,6 @@ Next, we scanned the dataset for any missing values, special values, inconsisten
 
 ## **Data**
 
-gdp of puerto rico 2017 = 31108
 
 The 2 dataset we used are obtained from the Kaggle website:
 -GDP per capita in US states is obtained from https://www.kaggle.com/datasets/solorzano/gdp-per-capita-in-us-states
@@ -113,8 +112,8 @@ print(tail(us_realtor_df))
 
 Data Import and Filtering:
 
-We starts by importing a CSV file named "us-gdp-by-state.csv" into a data frame called us_gdp_by_state_df, with the column names not being shown initially. The data represents GDP information by state in the United States.
-The data frame is then filtered to exclude any rows where the "Area" column equals "United States", as the analysis is intended to be at the state level rather than the entire country.
+We starts by importing a CSV file named "us-gdp-by-state.csv" into a data frame called us_gdp_by_state_df, with the column names not being shown initially. The data represents GDP information by state in the United States. 
+The data frame is then filtered to exclude any rows where the "Area" column equals "United States", as the analysis is intended to be at the state level rather than the entire country. We added Puerto Rico to the dataset because it was missing.
 
 We selected only the "Area" and "2017" columns, which  represent the state names and their corresponding GDP for the year 2017.
 
