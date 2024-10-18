@@ -372,11 +372,11 @@ print(violated_records)
 
 
 #Define the rule
-Rule2 <- editset(c("bed > 0"))
+Rule3 <- editset(c("bath > 0"))
 
 
 # Find the violated edits
-violations <- violatedEdits(Rule2, merged_df)
+violations <- violatedEdits(Rule3, merged_df)
 
 
 # Convert the violations matrix to a logical vector
