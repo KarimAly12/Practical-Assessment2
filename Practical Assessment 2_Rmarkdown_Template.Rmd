@@ -253,8 +253,12 @@ merged_df <- merged_df %>%
                         bed)) %>% 
 ungroup()
 
+print(colSums(is.na(merged_df)))
+
+
 merged_df <- merged_df %>%
   filter(!is.na(bed))
+
 
 
 print(colSums(is.na(merged_df)))
@@ -270,8 +274,13 @@ merged_df <- merged_df %>%
                         bath)) %>% 
 ungroup()
 
+print(colSums(is.na(merged_df)))
+
+
 merged_df <- merged_df %>%
   filter(!is.na(bath))
+
+
 
 print(colSums(is.na(merged_df)))
 
@@ -287,8 +296,12 @@ merged_df <- merged_df %>%
                         house_size)) %>% 
 ungroup()
 
+print(colSums(is.na(merged_df)))
+
 merged_df <- merged_df %>%
   filter(!is.na(house_size))
+
+
 
 print(colSums(is.na(merged_df)))
 
@@ -303,6 +316,10 @@ merged_df <- merged_df %>%
                        price/house_size, 
                         price_per_sqft)) %>% 
 ungroup()
+
+
+print(colSums(is.na(merged_df)))
+
 
 
 
@@ -335,6 +352,7 @@ violated_records <- merged_df[violation_vector, ]
 print(violated_records)
 
 merged_df <- merged_df %>% filter(price != 0)
+
 
 
 ```
